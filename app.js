@@ -13,6 +13,16 @@ const mealPlan = {
 // Password constant
 const CORRECT_PASSWORD = "K1681";
 
+// Toggle meal card expansion
+function toggleMealCard(card) {
+    card.classList.toggle('expanded');
+}
+
+// Toggle day item expansion
+function toggleDayItem(item) {
+    item.classList.toggle('expanded');
+}
+
 // Login function
 function login() {
     const passwordInput = document.getElementById('password');
@@ -132,18 +142,56 @@ function loadWeekSchedule() {
 
         const meal = mealPlan[day] || "No meal planned";
 
-        // Create a more readable display
-        let mealDisplay = meal;
-        if (meal.length > 80) {
-            // Truncate long meal descriptions and add expand functionality
-            const shortMeal = meal.substring(0, 80) + '...';
-            mealDisplay = `<span class="meal-short">${shortMeal}</span>`;
+        // Parse meals for summary
+        const mealTimes = meal.split('|').map(m => m.trim());
+        const summary = mealTimes.length > 1 ? `${mealTimes.length} meals planned` : 'View details';
+
+        // Create expandable structure
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-item-header';
+        dayHeader.onclick = function() { toggleDayItem(dayItem); };
+
+        const dayTitle = document.createElement('strong');
+        if (day === currentDay) {
+            dayTitle.innerHTML = `🌟 ${day} <span class="badge">Today</span>`;
+        } else {
+            dayTitle.textContent = day;
         }
 
-        dayItem.innerHTML = `
-            <strong>${day}${day === currentDay ? ' (Today)' : ''}</strong>
-            <span style="font-size: 14px; color: #555;">${mealDisplay}</span>
-        `;
+        const expandIcon = document.createElement('span');
+        expandIcon.className = 'expand-icon';
+        expandIcon.textContent = '▼';
+
+        dayHeader.appendChild(dayTitle);
+        dayHeader.appendChild(expandIcon);
+
+        const daySummary = document.createElement('div');
+        daySummary.className = 'day-item-summary';
+        daySummary.textContent = summary;
+
+        const dayDetails = document.createElement('div');
+        dayDetails.className = 'day-details';
+
+        // Parse and display detailed meals
+        mealTimes.forEach(mealTime => {
+            const mealDiv = document.createElement('div');
+            mealDiv.className = 'meal-info';
+
+            if (mealTime.includes(':')) {
+                const parts = mealTime.split(':');
+                const time = parts[0].trim();
+                const mealItems = parts.slice(1).join(':').trim();
+                mealDiv.innerHTML = `<strong>${time}</strong><span>${mealItems}</span>`;
+            } else {
+                mealDiv.innerHTML = `<span>${mealTime}</span>`;
+            }
+
+            dayDetails.appendChild(mealDiv);
+        });
+
+        dayItem.appendChild(dayHeader);
+        dayItem.appendChild(daySummary);
+        dayItem.appendChild(dayDetails);
 
         weekScheduleDiv.appendChild(dayItem);
     });
