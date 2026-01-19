@@ -1,26 +1,25 @@
-// Meal plan data from Weekly_Meal_Plan.xlsx
-// This is automatically generated from your Excel file
-const mealPlan = {
-    "Monday": "Morning: Thepla / Sheera | Afternoon: Bhindi / Fansi | Evening: Fruits | Night: Dal Rice / Thepla",
-    "Tuesday": "Morning: Corn / Thepla | Afternoon: Paneer Palak / Paneer Red Gravy | Evening: Bhel / Popcorn (Salted) | Night: Dosa / Kali Khichdi",
-    "Wednesday": "Morning: Dosa / Paratha / Bonda | Afternoon: Pav Bhaji (without Pav) / Cauliflower | Evening: Fruits | Night: Fried Rice / Rotla",
-    "Thursday": "Morning: Breadless Sandwich / Bonda | Afternoon: Miscellaneous | Evening: Snacks | Night: Dal Rice / Kali Khichdi",
-    "Friday": "Morning: Chana / Millet Dosa / Green Dosa | Afternoon: Gawar / Methi Mutter Malai | Evening: Fruits | Night: Chaat / Dal Rice",
-    "Saturday": "Morning: Poha / Thepla | Afternoon: Chole Paratha / Matki | Evening: Bhel | Night: Dosa / Uttapa / Quesadilla",
-    "Sunday": "Morning: Dosa / Uttapa / Quesadilla | Afternoon: Dal Dhokli | Evening: Fruits | Night: Dal Rice / Kali Khichdi"
-};
-
 // Password constant
 const CORRECT_PASSWORD = "K1681";
 
-// Toggle meal card expansion
-function toggleMealCard(card) {
-    card.classList.toggle('expanded');
-}
+// Global meal plan data (will be loaded from JSON)
+let mealPlan = {};
 
-// Toggle day item expansion
-function toggleDayItem(item) {
-    item.classList.toggle('expanded');
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    setupEventListeners();
+});
+
+// Setup event listeners
+function setupEventListeners() {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                login();
+            }
+        });
+    }
 }
 
 // Login function
@@ -32,12 +31,16 @@ function login() {
         // Store authentication in localStorage (persists until sign out)
         localStorage.setItem('authenticated', 'true');
 
-        // Hide login form and show dashboard
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('dashboard').classList.add('active');
+        // Hide login and show dashboard
+        document.getElementById('loginWrapper').style.display = 'none';
+        document.getElementById('dashboardWrapper').classList.add('active');
+        document.body.classList.add('dashboard-active');
 
-        // Load meal data
-        loadMealData();
+        // Load meal data from JSON
+        loadMealDataFromJSON();
+
+        // Set current date
+        updateCurrentDate();
 
         // Check notification status
         checkNotificationStatus();
@@ -53,26 +56,64 @@ function login() {
 
 // Logout function
 function logout() {
-    // Remove authentication from localStorage
     localStorage.removeItem('authenticated');
-    
-    // Show login form and hide dashboard
-    document.getElementById('loginForm').style.display = 'block';
-    document.getElementById('dashboard').classList.remove('active');
+    document.getElementById('loginWrapper').style.display = 'flex';
+    document.getElementById('dashboardWrapper').classList.remove('active');
+    document.body.classList.remove('dashboard-active');
     document.getElementById('password').value = '';
     document.getElementById('errorMessage').classList.remove('show');
 }
 
 // Check if user is already authenticated
 function checkAuth() {
-    // Check localStorage for persistent authentication
     if (localStorage.getItem('authenticated') === 'true') {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('dashboard').classList.add('active');
-        loadMealData();
+        document.getElementById('loginWrapper').style.display = 'none';
+        document.getElementById('dashboardWrapper').classList.add('active');
+        document.body.classList.add('dashboard-active');
+        loadMealDataFromJSON();
+        updateCurrentDate();
         checkNotificationStatus();
         setupNotificationScheduler();
     }
+}
+
+// Load meal data from JSON file
+async function loadMealDataFromJSON() {
+    try {
+        const response = await fetch('mealplan.json');
+        if (!response.ok) {
+            throw new Error('Failed to load meal plan');
+        }
+        mealPlan = await response.json();
+        console.log('Meal plan loaded:', mealPlan);
+        
+        // Load all the data
+        loadTodayMeals();
+        loadWeekSchedule();
+        loadWeekList();
+        updateMealCount();
+        
+    } catch (error) {
+        console.error('Error loading meal plan:', error);
+        // Fallback to empty data
+        mealPlan = {};
+        alert('Could not load meal plan. Please make sure mealplan.json exists.');
+    }
+}
+
+// Refresh meal data (reload from JSON)
+function refreshMealData() {
+    const btn = event.target;
+    btn.textContent = '⏳ Loading...';
+    btn.disabled = true;
+    
+    loadMealDataFromJSON().then(() => {
+        btn.textContent = '✅ Updated!';
+        setTimeout(() => {
+            btn.textContent = '🔄 Refresh';
+            btn.disabled = false;
+        }, 2000);
+    });
 }
 
 // Get current day name
@@ -90,153 +131,339 @@ function getTomorrowDay() {
     return days[tomorrow.getDay()];
 }
 
-// Load meal data for today
-function loadMealData() {
+// Update current date display
+function updateCurrentDate() {
+    const dateElement = document.getElementById('currentDate');
+    if (dateElement) {
+        const today = new Date();
+        const options = { month: 'short', day: 'numeric', year: 'numeric' };
+        dateElement.textContent = today.toLocaleDateString('en-US', options);
+    }
+}
+
+// Load today's meals
+function loadTodayMeals() {
     const currentDay = getCurrentDay();
     const todayMeal = mealPlan[currentDay] || "No meal planned";
 
-    document.getElementById('todayDay').textContent = currentDay;
+    // Update day name in all places
+    const dayElements = ['todayDay', 'todayDay2'];
+    dayElements.forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem) elem.textContent = currentDay;
+    });
 
-    // Parse and display meals by time
+    // Load meals in overview section
     const todayMealsDiv = document.getElementById('todayMeals');
-    todayMealsDiv.innerHTML = '';
+    if (todayMealsDiv) {
+        todayMealsDiv.innerHTML = '';
+        if (todayMeal && todayMeal !== "No meal planned") {
+            const mealTimes = todayMeal.split('|').map(m => m.trim());
+            mealTimes.forEach(mealTime => {
+                const mealInfo = document.createElement('div');
+                mealInfo.className = 'meal-info';
 
-    if (todayMeal && todayMeal !== "No meal planned") {
-        // Split by | to get different meal times
-        const mealTimes = todayMeal.split('|').map(m => m.trim());
+                if (mealTime.includes(':')) {
+                    const parts = mealTime.split(':');
+                    const time = parts[0].trim();
+                    const meal = parts.slice(1).join(':').trim();
+                    mealInfo.innerHTML = `<strong>${time}</strong><span>${meal}</span>`;
+                } else {
+                    mealInfo.innerHTML = `<span>${mealTime}</span>`;
+                }
 
-        mealTimes.forEach(mealTime => {
-            const mealInfo = document.createElement('div');
-            mealInfo.className = 'meal-info';
-
-            // Check if it has a time prefix (e.g., "Morning:", "Afternoon:")
-            if (mealTime.includes(':')) {
-                const parts = mealTime.split(':');
-                const time = parts[0].trim();
-                const meal = parts.slice(1).join(':').trim();
-                mealInfo.innerHTML = `<strong>${time}:</strong><span>${meal}</span>`;
-            } else {
-                mealInfo.innerHTML = `<span>${mealTime}</span>`;
-            }
-
-            todayMealsDiv.appendChild(mealInfo);
-        });
-    } else {
-        todayMealsDiv.innerHTML = '<div class="meal-info"><span>No meal planned</span></div>';
+                todayMealsDiv.appendChild(mealInfo);
+            });
+        } else {
+            todayMealsDiv.innerHTML = '<div class="meal-info"><span>No meal planned</span></div>';
+        }
     }
 
-    // Load week schedule
-    loadWeekSchedule();
+    // Load detailed meals in today section
+    const todayMealsDetailed = document.getElementById('todayMealsDetailed');
+    if (todayMealsDetailed) {
+        todayMealsDetailed.innerHTML = todayMealsDiv ? todayMealsDiv.innerHTML : '';
+    }
+}
+
+// Update meal count
+function updateMealCount() {
+    const currentDay = getCurrentDay();
+    const todayMeal = mealPlan[currentDay] || "";
+    const mealCount = todayMeal ? todayMeal.split('|').length : 0;
+    
+    const countElement = document.getElementById('mealCount');
+    if (countElement) {
+        countElement.textContent = mealCount;
+    }
+}
+
+// Load week list for overview
+function loadWeekList() {
+    const currentDay = getCurrentDay();
+    const weekListDiv = document.getElementById('weekList');
+    if (!weekListDiv) return;
+
+    weekListDiv.innerHTML = '';
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    days.forEach(day => {
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card';
+        if (day === currentDay) {
+            dayCard.classList.add('active');
+        }
+
+        const meal = mealPlan[day] || "No meal planned";
+        const mealTimes = meal.split('|').map(m => m.trim());
+        const mealCount = mealTimes.length;
+
+        dayCard.innerHTML = `
+            <div class="day-name">${day === currentDay ? '⭐ ' : ''}${day}</div>
+            <div class="meal-count">${mealCount} meal${mealCount !== 1 ? 's' : ''} planned</div>
+        `;
+
+        dayCard.onclick = () => {
+            showSection('week');
+        };
+
+        weekListDiv.appendChild(dayCard);
+    });
 }
 
 // Load entire week schedule
 function loadWeekSchedule() {
     const currentDay = getCurrentDay();
     const weekScheduleDiv = document.getElementById('weekSchedule');
-    weekScheduleDiv.innerHTML = '';
+    if (!weekScheduleDiv) return;
 
+    weekScheduleDiv.innerHTML = '';
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     days.forEach(day => {
-        const dayItem = document.createElement('div');
-        dayItem.className = 'day-item';
-        if (day === currentDay) {
-            dayItem.classList.add('today');
-        }
+        const daySection = document.createElement('div');
+        daySection.className = 'card';
+        daySection.style.marginBottom = '20px';
 
         const meal = mealPlan[day] || "No meal planned";
-
-        // Parse meals for summary
         const mealTimes = meal.split('|').map(m => m.trim());
-        const summary = mealTimes.length > 1 ? `${mealTimes.length} meals planned` : 'View details';
 
-        // Create expandable structure
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-item-header';
-        dayHeader.onclick = function() { toggleDayItem(dayItem); };
-
-        const dayTitle = document.createElement('strong');
-        if (day === currentDay) {
-            dayTitle.innerHTML = `🌟 ${day} <span class="badge">Today</span>`;
-        } else {
-            dayTitle.textContent = day;
-        }
-
-        const expandIcon = document.createElement('span');
-        expandIcon.className = 'expand-icon';
-        expandIcon.textContent = '▼';
-
-        dayHeader.appendChild(dayTitle);
-        dayHeader.appendChild(expandIcon);
-
-        const daySummary = document.createElement('div');
-        daySummary.className = 'day-item-summary';
-        daySummary.textContent = summary;
-
-        const dayDetails = document.createElement('div');
-        dayDetails.className = 'day-details';
-
-        // Parse and display detailed meals
+        let mealsHTML = '';
         mealTimes.forEach(mealTime => {
-            const mealDiv = document.createElement('div');
-            mealDiv.className = 'meal-info';
-
             if (mealTime.includes(':')) {
                 const parts = mealTime.split(':');
                 const time = parts[0].trim();
                 const mealItems = parts.slice(1).join(':').trim();
-                mealDiv.innerHTML = `<strong>${time}</strong><span>${mealItems}</span>`;
+                mealsHTML += `<div class="meal-info"><strong>${time}</strong><span>${mealItems}</span></div>`;
             } else {
-                mealDiv.innerHTML = `<span>${mealTime}</span>`;
+                mealsHTML += `<div class="meal-info"><span>${mealTime}</span></div>`;
             }
-
-            dayDetails.appendChild(mealDiv);
         });
 
-        dayItem.appendChild(dayHeader);
-        dayItem.appendChild(daySummary);
-        dayItem.appendChild(dayDetails);
+        daySection.innerHTML = `
+            <div class="card-header">
+                <h3>${day === currentDay ? '⭐ ' : ''}${day}</h3>
+                <span class="icon">🍽️</span>
+            </div>
+            ${mealsHTML}
+        `;
 
-        weekScheduleDiv.appendChild(dayItem);
+        weekScheduleDiv.appendChild(daySection);
     });
 }
 
-// Enable notifications
-async function enableNotifications() {
+// Search meals
+function searchMeals() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (!searchTerm) {
+        // If search is empty, just reload normal view
+        loadWeekSchedule();
+        return;
+    }
+
+    const weekScheduleDiv = document.getElementById('weekSchedule');
+    if (!weekScheduleDiv) return;
+
+    weekScheduleDiv.innerHTML = '';
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    let foundAny = false;
+
+    days.forEach(day => {
+        const meal = mealPlan[day] || "";
+        if (meal.toLowerCase().includes(searchTerm)) {
+            foundAny = true;
+            const daySection = document.createElement('div');
+            daySection.className = 'card';
+            daySection.style.marginBottom = '20px';
+
+            const mealTimes = meal.split('|').map(m => m.trim());
+            let mealsHTML = '';
+            
+            mealTimes.forEach(mealTime => {
+                if (mealTime.toLowerCase().includes(searchTerm)) {
+                    if (mealTime.includes(':')) {
+                        const parts = mealTime.split(':');
+                        const time = parts[0].trim();
+                        const mealItems = parts.slice(1).join(':').trim();
+                        mealsHTML += `<div class="meal-info"><strong>${time}</strong><span>${mealItems}</span></div>`;
+                    } else {
+                        mealsHTML += `<div class="meal-info"><span>${mealTime}</span></div>`;
+                    }
+                }
+            });
+
+            if (mealsHTML) {
+                daySection.innerHTML = `
+                    <div class="card-header">
+                        <h3>${day}</h3>
+                        <span class="icon">🍽️</span>
+                    </div>
+                    ${mealsHTML}
+                `;
+                weekScheduleDiv.appendChild(daySection);
+            }
+        }
+    });
+
+    if (!foundAny) {
+        weekScheduleDiv.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>No meals found matching your search</p></div>';
+    }
+
+    // Make sure week section is visible
+    showSection('week');
+}
+
+// Show section (navigation)
+function showSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show selected section
+    const targetSection = document.getElementById(sectionName);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    // Update nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionName) {
+            link.classList.add('active');
+        }
+    });
+
+    // Close mobile sidebar if open
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('mobile-open');
+    }
+}
+
+// Toggle mobile sidebar
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+    }
+}
+
+// Generate shopping list
+function generateShoppingList() {
+    const shoppingListDiv = document.getElementById('shoppingList');
+    if (!shoppingListDiv) return;
+
+    // Extract all ingredients from the week
+    const ingredients = new Set();
+    
+    Object.values(mealPlan).forEach(dayMeals => {
+        const meals = dayMeals.split('|').map(m => m.trim());
+        meals.forEach(meal => {
+            // Extract food items (after colon)
+            if (meal.includes(':')) {
+                const items = meal.split(':')[1].split('/');
+                items.forEach(item => {
+                    const cleaned = item.trim();
+                    if (cleaned) ingredients.add(cleaned);
+                });
+            }
+        });
+    });
+
+    if (ingredients.size === 0) {
+        shoppingListDiv.innerHTML = '<div class="empty-state"><div class="icon">🛒</div><p>No ingredients found</p></div>';
+        return;
+    }
+
+    let html = '<div style="padding: 20px 0;">';
+    Array.from(ingredients).sort().forEach(ingredient => {
+        html += `
+            <div class="shopping-item">
+                <input type="checkbox" id="item-${ingredient.replace(/\s+/g, '-')}" 
+                       onchange="toggleShoppingItem(this)">
+                <label for="item-${ingredient.replace(/\s+/g, '-')}">${ingredient}</label>
+            </div>
+        `;
+    });
+    html += '</div>';
+
+    shoppingListDiv.innerHTML = html;
+}
+
+// Toggle shopping item checked state
+function toggleShoppingItem(checkbox) {
+    const item = checkbox.closest('.shopping-item');
+    if (checkbox.checked) {
+        item.classList.add('checked');
+    } else {
+        item.classList.remove('checked');
+    }
+}
+
+// Export data
+function exportData() {
+    const dataStr = JSON.stringify(mealPlan, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `meal-plan-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+
+// Notification functions
+function enableNotifications() {
     if (!("Notification" in window)) {
         alert("This browser does not support notifications");
         return;
     }
 
-    try {
-        const permission = await Notification.requestPermission();
-
+    Notification.requestPermission().then(permission => {
         if (permission === "granted") {
             localStorage.setItem('notificationsEnabled', 'true');
             updateNotificationStatus();
-
-            // Show a test notification
             showNotification("Notifications Enabled!", "You'll receive daily meal reminders at 10 PM");
-
-            // Setup the notification scheduler
             setupNotificationScheduler();
         } else {
             document.getElementById('notificationStatus').textContent =
                 "⚠️ Notifications permission denied. Please enable them in your browser settings.";
         }
-    } catch (error) {
+    }).catch(error => {
         console.error("Error requesting notification permission:", error);
-    }
+    });
 }
 
-// Check notification status
 function checkNotificationStatus() {
     updateNotificationStatus();
 }
 
-// Update notification status display
 function updateNotificationStatus() {
     const statusDiv = document.getElementById('notificationStatus');
+    if (!statusDiv) return;
 
     if (localStorage.getItem('notificationsEnabled') === 'true' && Notification.permission === "granted") {
         statusDiv.innerHTML = "✅ Notifications are enabled! You'll be notified at 10 PM daily.";
@@ -247,7 +474,6 @@ function updateNotificationStatus() {
     }
 }
 
-// Show notification
 function showNotification(title, body) {
     if (Notification.permission === "granted") {
         const notification = new Notification(title, {
@@ -265,16 +491,11 @@ function showNotification(title, body) {
     }
 }
 
-// Setup notification scheduler
 function setupNotificationScheduler() {
-    // Check if notifications should be sent
     checkAndSendNotification();
-
-    // Check every minute if it's time to send notification
     setInterval(checkAndSendNotification, 60000); // Check every minute
 }
 
-// Check if it's time to send notification and send it
 function checkAndSendNotification() {
     if (localStorage.getItem('notificationsEnabled') !== 'true') {
         return;
@@ -284,12 +505,10 @@ function checkAndSendNotification() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    // Check if it's 10 PM (22:00)
     if (hours === 22 && minutes === 0) {
         const lastNotificationDate = localStorage.getItem('lastNotificationDate');
         const todayDate = now.toDateString();
 
-        // Only send once per day
         if (lastNotificationDate !== todayDate) {
             const tomorrowDay = getTomorrowDay();
             const tomorrowMeal = mealPlan[tomorrowDay] || "No meal planned";
@@ -303,20 +522,4 @@ function checkAndSendNotification() {
         }
     }
 }
-
-// Allow Enter key to submit login
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.getElementById('password');
-
-    if (passwordInput) {
-        passwordInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                login();
-            }
-        });
-    }
-
-    // Check if user is already authenticated
-    checkAuth();
-});
 

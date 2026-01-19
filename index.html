@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Meal Plan</title>
+    <title>Weekly Meal Plan - Smart Meal Planning</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -14,21 +14,43 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8f9fa;
+            --sidebar-width: 280px;
+        }
+
         body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
             overflow-x: hidden;
         }
 
-        body::before {
+        body.dashboard-active {
+            background: #f0f2f5;
+        }
+
+        /* Login Page */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-wrapper::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -43,16 +65,16 @@
             to { transform: translateY(-60px); }
         }
 
-        .container {
+        .login-container {
             background: white;
             border-radius: 25px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
             padding: 45px;
-            max-width: 550px;
+            max-width: 450px;
             width: 100%;
             animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
-            z-index: 1;
+            z-index: 10;
         }
 
         @keyframes fadeInUp {
@@ -66,31 +88,27 @@
             }
         }
 
-        .login-form {
-            text-align: center;
-        }
-
         .login-form h1 {
             color: #2c3e50;
             margin-bottom: 12px;
             font-size: 32px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-align: center;
         }
 
         .login-form p {
             color: #7f8c8d;
             margin-bottom: 35px;
             font-size: 15px;
-            font-weight: 300;
+            text-align: center;
         }
 
         .input-group {
             margin-bottom: 25px;
-            text-align: left;
         }
 
         .input-group label {
@@ -110,22 +128,21 @@
             border-radius: 12px;
             font-size: 16px;
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             background: #f8f9fa;
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary-color);
             background: white;
             box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
-            transform: translateY(-2px);
         }
 
         .btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
             border: none;
             border-radius: 12px;
@@ -133,35 +150,13 @@
             font-weight: 600;
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .error-message {
@@ -186,74 +181,241 @@
             75% { transform: translateX(10px); }
         }
 
-        .dashboard {
+        /* Dashboard Layout */
+        .dashboard-wrapper {
             display: none;
+            min-height: 100vh;
         }
 
-        .dashboard.active {
-            display: block;
-            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .dashboard-wrapper.active {
+            display: flex;
         }
 
-        .dashboard h1 {
-            color: #2c3e50;
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: white;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 25px 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 25px;
             margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 5px;
         }
 
-        .meal-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 28px;
-            border-radius: 18px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+        .sidebar-header .user-info {
+            font-size: 12px;
+            color: var(--text-light);
         }
 
-        .meal-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 30px;
+            padding: 0 15px;
         }
 
-        .meal-card h2 {
-            color: #667eea;
-            margin-bottom: 18px;
-            font-size: 22px;
-            font-weight: 600;
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-light);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .nav-link .icon {
+            font-size: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 0 25px;
+            margin-top: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 250px;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #e8e8e8;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-bar .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid #e8e8e8;
+        }
+
+        .action-btn.secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .card-header .icon {
+            font-size: 24px;
         }
 
         .meal-info {
-            background: white;
-            padding: 16px 18px;
+            background: var(--bg-light);
+            padding: 16px;
             border-radius: 12px;
             margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             border-left: 3px solid transparent;
         }
 
         .meal-info:hover {
             transform: translateX(5px);
-            border-left-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
-
-        .meal-info:last-child {
-            margin-bottom: 0;
+            border-left-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .meal-info strong {
-            color: #667eea;
+            color: var(--primary-color);
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
@@ -263,242 +425,441 @@
         }
 
         .meal-info span {
-            color: #2c3e50;
-            font-size: 16px;
+            color: var(--text-dark);
+            font-size: 15px;
             line-height: 1.6;
-            font-weight: 400;
         }
 
-        .notification-settings {
-            background: linear-gradient(135deg, #fff9e6 0%, #ffe8b3 100%);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            border-left: 5px solid #ffc107;
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
-            transition: all 0.3s ease;
+        .day-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .notification-settings:hover {
-            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        .day-card {
+            background: var(--bg-light);
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .notification-settings h3 {
-            color: #856404;
-            margin-bottom: 12px;
-            font-size: 17px;
+        .day-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .day-card.active {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left-color: var(--success-color);
+        }
+
+        .day-card .day-name {
             font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .day-card.active .day-name {
+            color: var(--success-color);
+        }
+
+        .day-card .meal-count {
+            font-size: 13px;
+            opacity: 0.8;
+            color: var(--text-light);
+        }
+
+        /* Shopping List & Features */
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h4 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .shopping-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .notification-settings p {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .notification-settings button {
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-            color: #333;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
-        }
-
-        .notification-settings button:hover {
-            background: linear-gradient(135deg, #ffb300 0%, #f57c00 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-        }
-
-        .notification-settings button:active {
-            transform: translateY(0);
-        }
-
-        .notification-status {
-            margin-top: 14px;
-            color: #856404;
-            font-size: 13px;
+            gap: 12px;
             padding: 10px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 8px;
-            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
         }
 
-        .week-schedule {
-            margin-top: 35px;
+        .shopping-item:last-child {
+            border-bottom: none;
         }
 
-        .week-schedule h2 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .week-schedule h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        .day-item {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 18px 20px;
-            border-radius: 14px;
-            margin-bottom: 14px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .shopping-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            position: relative;
-            overflow: hidden;
         }
 
-        .day-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
+        .shopping-item label {
+            flex: 1;
+            cursor: pointer;
+            color: var(--text-dark);
         }
 
-        .day-item:hover::before {
-            width: 100%;
-            opacity: 0.05;
+        .shopping-item.checked label {
+            text-decoration: line-through;
+            opacity: 0.5;
         }
 
-        .day-item:hover {
-            transform: translateX(8px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .day-item.today {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-left-color: #28a745;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
-        }
-
-        .day-item.today::before {
-            background: linear-gradient(180deg, #28a745 0%, #20c997 100%);
-        }
-
-        .day-item strong {
-            color: #667eea;
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .day-item.today strong {
-            color: #28a745;
-        }
-
-        .logout-btn {
-            width: 100%;
-            margin-top: 30px;
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-        }
-
-        .logout-btn:hover {
-            background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        .stat-box {
+            background: var(--primary-gradient);
             color: white;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 25px;
+        .stat-box .number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe8b3 100%);
+            color: #856404;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
             }
-            
-            body {
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
                 padding: 15px;
             }
-            
-            .login-form h1, .dashboard h1 {
-                font-size: 26px;
+
+            .search-bar {
+                max-width: 100%;
             }
+
+            :root {
+                --sidebar-width: 0px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeInUp 0.5s;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Login Form -->
-        <div class="login-form" id="loginForm">
-            <h1>🍽️ Weekly Meal Plan</h1>
-            <p>Please enter your password to continue</p>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" autocomplete="off">
+    <!-- Login Page -->
+    <div class="login-wrapper" id="loginWrapper">
+        <div class="login-container">
+            <div class="login-form">
+                <h1>🍽️ Meal Planner</h1>
+                <p>Plan your meals smartly and efficiently</p>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" autocomplete="off">
+                </div>
+                <button class="btn" onclick="login()">Login</button>
+                <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
             </div>
-            <button class="btn" onclick="login()">Login</button>
-            <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
-        </div>
-
-        <!-- Dashboard -->
-        <div class="dashboard" id="dashboard">
-            <h1>🍽️ Weekly Meal Plan</h1>
-
-            <div class="notification-settings">
-                <h3>🔔 Daily Notifications</h3>
-                <p style="margin-bottom: 10px;">
-                    Get browser notifications every day at 10 PM about tomorrow's meal
-                </p>
-                <p style="font-size: 12px; margin-bottom: 15px; opacity: 0.8;">
-                    ℹ️ Using Browser Notification API - Works in Chrome, Firefox, Edge, Safari
-                </p>
-                <button onclick="enableNotifications()">Enable Notifications</button>
-                <div class="notification-status" id="notificationStatus"></div>
-            </div>
-
-            <div class="meal-card">
-                <h2>Today's Meals - <span id="todayDay">Loading...</span></h2>
-                <div id="todayMeals">Loading...</div>
-            </div>
-
-            <div class="week-schedule">
-                <h2>This Week's Schedule</h2>
-                <div id="weekSchedule"></div>
-            </div>
-
-            <button class="btn logout-btn" onclick="logout()">Logout</button>
         </div>
     </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-wrapper" id="dashboardWrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>🍽️ Meal Planner</h2>
+                <div class="user-info">Logged in • <span id="currentDate"></span></div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="showSection('overview')" data-section="overview">
+                        <span class="icon">📊</span>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('today')" data-section="today">
+                        <span class="icon">📅</span>
+                        <span>Today's Meals</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('week')" data-section="week">
+                        <span class="icon">🗓️</span>
+                        <span>Week Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('shopping')" data-section="shopping">
+                        <span class="icon">🛒</span>
+                        <span>Shopping List</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('favorites')" data-section="favorites">
+                        <span class="icon">⭐</span>
+                        <span>Favorites</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('history')" data-section="history">
+                        <span class="icon">📜</span>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('notifications')" data-section="notifications">
+                        <span class="icon">🔔</span>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button class="btn" onclick="logout()" style="margin-top: 20px;">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search meals..." oninput="searchMeals()">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-btn primary" onclick="refreshMealData()">🔄 Refresh</button>
+                    <button class="action-btn secondary" onclick="exportData()">📥 Export</button>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div id="overview" class="section active">
+                <div class="notification-badge" id="updateNotification">
+                    ℹ️ Menu automatically updates from your mealplan.json file
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Today's Meals - <span id="todayDay">Loading...</span></h3>
+                            <span class="icon">🍽️</span>
+                        </div>
+                        <div id="todayMeals">Loading...</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Quick Stats</h3>
+                            <span class="icon">📈</span>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="number" id="mealCount">0</div>
+                                <div class="label">Today's Meals</div>
+                            </div>
+                            <div class="stat-box" style="background: var(--success-color);">
+                                <div class="number">7</div>
+                                <div class="label">Days Planned</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>This Week</h3>
+                        <span class="icon">📋</span>
+                    </div>
+                    <div class="day-list" id="weekList"></div>
+                </div>
+            </div>
+
+            <!-- Today Section -->
+            <div id="today" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's Complete Meal Plan - <span id="todayDay2">Loading...</span></h3>
+                        <span class="icon">🍽️</span>
+                    </div>
+                    <div id="todayMealsDetailed">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Week Schedule Section -->
+            <div id="week" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Complete Week Schedule</h3>
+                        <span class="icon">🗓️</span>
+                    </div>
+                    <div id="weekSchedule"></div>
+                </div>
+            </div>
+
+            <!-- Shopping List Section -->
+            <div id="shopping" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Shopping List</h3>
+                        <span class="icon">🛒</span>
+                    </div>
+                    <div id="shoppingList">
+                        <div class="empty-state">
+                            <div class="icon">🛒</div>
+                            <p>Your shopping list is empty</p>
+                            <button class="action-btn primary" style="margin-top: 20px;" onclick="generateShoppingList()">Generate from Week Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorites Section -->
+            <div id="favorites" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Favorite Meals</h3>
+                        <span class="icon">⭐</span>
+                    </div>
+                    <div id="favoritesList">
+                        <div class="empty-state">
+                            <div class="icon">⭐</div>
+                            <p>No favorites yet. Add meals to your favorites!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div id="history" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Meal History</h3>
+                        <span class="icon">📜</span>
+                    </div>
+                    <div id="historyList">
+                        <div class="empty-state">
+                            <div class="icon">📜</div>
+                            <p>No history available yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Section -->
+            <div id="notifications" class="section">
+                <div class="feature-card">
+                    <h4>🔔 Daily Notifications</h4>
+                    <p style="margin-bottom: 15px; color: var(--text-light); font-size: 14px;">
+                        Get notified every day at 10 PM about tomorrow's meals
+                    </p>
+                    <button class="action-btn primary" onclick="enableNotifications()">Enable Notifications</button>
+                    <div id="notificationStatus" style="margin-top: 15px; padding: 12px; background: var(--bg-light); border-radius: 8px; font-size: 13px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">☰</button>
 
     <script src="app.js"></script>
 </body>
