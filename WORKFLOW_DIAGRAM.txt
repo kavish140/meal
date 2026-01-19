@@ -1,0 +1,302 @@
+═══════════════════════════════════════════════════════════════════
+        🍽️ MEAL PLANNER - COMPLETE WORKFLOW DIAGRAM
+═══════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    📱 YOUR WEBSITE FEATURES                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  🔐 LOGIN                                               │   │
+│  │  • Password: K1681                                      │   │
+│  │  • Stays logged in (localStorage)                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                         ▼                                       │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  📊 DASHBOARD (Full Screen Layout)                     │   │
+│  │                                                         │   │
+│  │  ┌──────────┐  ┌──────────────────────────────────┐   │   │
+│  │  │ SIDEBAR  │  │  MAIN CONTENT AREA               │   │   │
+│  │  │          │  │                                  │   │   │
+│  │  │ 📊 Over- │  │  🔍 Search Bar                   │   │   │
+│  │  │    view  │  │  ─────────────────────           │   │   │
+│  │  │ 📅 Today │  │                                  │   │   │
+│  │  │ 🗓️ Week  │  │  ┌──────────────────────────┐   │   │   │
+│  │  │ 🛒 Shop  │  │  │  📊 Overview Section    │   │   │   │
+│  │  │ ⭐ Fav   │  │  │  • Today's meals        │   │   │   │
+│  │  │ 📜 Hist  │  │  │  • Quick stats          │   │   │   │
+│  │  │ 🔔 Notif │  │  │  • Week preview         │   │   │   │
+│  │  │          │  │  └──────────────────────────┘   │   │   │
+│  │  │ 🚪 Logout│  │                                  │   │   │
+│  │  └──────────┘  └──────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════
+                    🔄 UPDATE WORKFLOW
+═══════════════════════════════════════════════════════════════════
+
+        ┌──────────────────────────────┐
+        │   1️⃣ EDIT EXCEL FILE        │
+        │   Weekly_Meal_Plan.xlsx      │
+        │                              │
+        │   • Add/change meals         │
+        │   • Save the file            │
+        └──────────────┬───────────────┘
+                       │
+                       ▼
+        ┌──────────────────────────────┐
+        │   2️⃣ RUN UPDATE SCRIPT       │
+        │                              │
+        │   Windows: auto_update.bat   │
+        │   PowerShell: auto_update.ps1│
+        │   Python: auto_update.py     │
+        └──────────────┬───────────────┘
+                       │
+                       ▼
+        ┌──────────────────────────────┐
+        │   3️⃣ AUTOMATIC PROCESS       │
+        │                              │
+        │   📖 Read Excel              │
+        │   🔄 Convert to JSON         │
+        │   💾 Save mealplan.json      │
+        │   📦 Git add & commit        │
+        │   🚀 Push to GitHub          │
+        └──────────────┬───────────────┘
+                       │
+                       ▼
+        ┌──────────────────────────────┐
+        │   4️⃣ GITHUB PAGES DEPLOY     │
+        │                              │
+        │   ⏱️ Wait 1-2 minutes         │
+        │   🌐 Website auto-updates    │
+        └──────────────┬───────────────┘
+                       │
+                       ▼
+        ┌──────────────────────────────┐
+        │   5️⃣ WEBSITE LOADS NEW DATA  │
+        │                              │
+        │   📱 app.js loads JSON       │
+        │   ✅ New meals displayed     │
+        └──────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════
+                    📱 RESPONSIVE LAYOUT
+═══════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         DESKTOP VIEW                            │
+│  ┌──────────┬───────────────────────────────────────────────┐   │
+│  │ SIDEBAR  │            MAIN CONTENT                       │   │
+│  │ (280px)  │            (Flexible width)                   │   │
+│  │          │                                               │   │
+│  │ Nav      │  Search bar + Action buttons                 │   │
+│  │ Links    │  ═════════════════════════                    │   │
+│  │          │                                               │   │
+│  │          │  ┌──────────────┐ ┌──────────────┐           │   │
+│  │          │  │   Card 1     │ │   Card 2     │           │   │
+│  │          │  └──────────────┘ └──────────────┘           │   │
+│  │          │                                               │   │
+│  │          │  ┌────────────────────────────────┐           │   │
+│  │          │  │   Full width card              │           │   │
+│  │          │  └────────────────────────────────┘           │   │
+│  └──────────┴───────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         TABLET VIEW                             │
+│  ┌──────────┬───────────────────────────────────────────────┐   │
+│  │ SIDEBAR  │          MAIN CONTENT                         │   │
+│  │ (visible)│          (Single column)                      │   │
+│  └──────────┴───────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         MOBILE VIEW                             │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                  MAIN CONTENT                           │    │
+│  │                  (Full width)                           │    │
+│  │                                                         │    │
+│  │  Search bar                                             │    │
+│  │  ═════════                                              │    │
+│  │                                                         │    │
+│  │  ┌──────────────────────────────────┐                  │    │
+│  │  │        Card (full width)         │                  │    │
+│  │  └──────────────────────────────────┘                  │    │
+│  │                                                         │    │
+│  │                                         ┌──────┐        │    │
+│  │  Sidebar hidden                         │  ☰   │        │    │
+│  │  (Tap menu button to open) ────────────▶└──────┘        │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════
+                    🎯 FEATURE MAP
+═══════════════════════════════════════════════════════════════════
+
+📊 OVERVIEW
+├─ Today's meals (summary)
+├─ Quick statistics
+│  ├─ Meal count
+│  └─ Days planned
+└─ Week preview list
+
+📅 TODAY'S MEALS
+└─ Detailed view of all meals for the current day
+
+🗓️ WEEK SCHEDULE
+├─ Monday through Sunday
+├─ Expandable cards
+└─ All meals with time slots
+
+🛒 SHOPPING LIST
+├─ Auto-generate button
+├─ Checkbox for each item
+└─ Ingredient extraction from meals
+
+⭐ FAVORITES
+└─ Save favorite meals (future feature)
+
+📜 HISTORY
+└─ Track meal history (future feature)
+
+🔔 NOTIFICATIONS
+├─ Enable/disable toggle
+├─ Browser notification API
+└─ Daily reminder at 10 PM
+
+🔍 SEARCH
+├─ Real-time search
+├─ Filters by meal name/ingredient
+└─ Shows results in week view
+
+📥 EXPORT
+└─ Download meal plan as JSON
+
+🔄 REFRESH
+└─ Reload data from JSON file
+
+═══════════════════════════════════════════════════════════════════
+                    💾 DATA FLOW
+═══════════════════════════════════════════════════════════════════
+
+Weekly_Meal_Plan.xlsx (SOURCE)
+        │
+        │ (convert_excel_to_json.py)
+        │
+        ▼
+mealplan.json (AUTO-GENERATED)
+        │
+        │ (fetch API)
+        │
+        ▼
+app.js (LOADS DATA)
+        │
+        │ (JavaScript processing)
+        │
+        ▼
+index.html (DISPLAYS)
+        │
+        │ (User interactions)
+        │
+        ▼
+localStorage (PERSISTENCE)
+        │
+        ├─ authenticated: true/false
+        ├─ notificationsEnabled: true/false
+        └─ lastNotificationDate: date
+
+═══════════════════════════════════════════════════════════════════
+                    🔐 AUTHENTICATION FLOW
+═══════════════════════════════════════════════════════════════════
+
+    ┌─────────────────┐
+    │   Page Load     │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Check localStorage│
+    │ for 'authenticated'│
+    └────────┬────────┘
+             │
+      ┌──────┴──────┐
+      │             │
+      ▼             ▼
+┌──────────┐  ┌──────────┐
+│ Found    │  │ Not Found│
+│ 'true'   │  │          │
+└─────┬────┘  └─────┬────┘
+      │             │
+      ▼             ▼
+┌──────────┐  ┌──────────┐
+│ Show     │  │ Show     │
+│Dashboard │  │ Login    │
+└─────┬────┘  └─────┬────┘
+      │             │
+      │             ▼
+      │       ┌──────────┐
+      │       │ Enter PW │
+      │       └─────┬────┘
+      │             │
+      │             ▼
+      │       ┌──────────┐
+      │       │ Correct? │
+      │       └─────┬────┘
+      │             │
+      │      ┌──────┴──────┐
+      │      │             │
+      │      ▼             ▼
+      │  ┌────────┐   ┌────────┐
+      │  │  YES   │   │  NO    │
+      │  └───┬────┘   └───┬────┘
+      │      │            │
+      │      │            ▼
+      │      │       ┌────────┐
+      │      │       │ Error  │
+      │      │       │ Shake  │
+      │      │       └────────┘
+      │      │
+      │      ▼
+      │  ┌────────────────┐
+      └─▶│ Set localStorage│
+         │ authenticated   │
+         └───────┬─────────┘
+                 │
+                 ▼
+         ┌───────────────┐
+         │ Show Dashboard│
+         └───────────────┘
+
+═══════════════════════════════════════════════════════════════════
+                    🎨 TECHNOLOGY STACK
+═══════════════════════════════════════════════════════════════════
+
+FRONTEND:
+├─ HTML5
+├─ CSS3 (Custom variables, Grid, Flexbox)
+├─ JavaScript (ES6+)
+└─ Google Fonts (Poppins)
+
+BACKEND:
+├─ Python 3
+├─ pandas (Excel processing)
+└─ json (Data format)
+
+HOSTING:
+└─ GitHub Pages (Static hosting)
+
+VERSION CONTROL:
+└─ Git + GitHub
+
+APIs USED:
+├─ Fetch API (Load JSON)
+├─ Notification API (Reminders)
+└─ localStorage API (Persistence)
+
+═══════════════════════════════════════════════════════════════════
+
+                    🎊 ENJOY YOUR MEAL PLANNER!
+
+═══════════════════════════════════════════════════════════════════
