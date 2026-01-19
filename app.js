@@ -29,8 +29,8 @@ function login() {
     const errorMessage = document.getElementById('errorMessage');
 
     if (passwordInput.value === CORRECT_PASSWORD) {
-        // Store authentication in session
-        sessionStorage.setItem('authenticated', 'true');
+        // Store authentication in localStorage (persists until sign out)
+        localStorage.setItem('authenticated', 'true');
 
         // Hide login form and show dashboard
         document.getElementById('loginForm').style.display = 'none';
@@ -53,7 +53,10 @@ function login() {
 
 // Logout function
 function logout() {
-    sessionStorage.removeItem('authenticated');
+    // Remove authentication from localStorage
+    localStorage.removeItem('authenticated');
+    
+    // Show login form and hide dashboard
     document.getElementById('loginForm').style.display = 'block';
     document.getElementById('dashboard').classList.remove('active');
     document.getElementById('password').value = '';
@@ -62,7 +65,8 @@ function logout() {
 
 // Check if user is already authenticated
 function checkAuth() {
-    if (sessionStorage.getItem('authenticated') === 'true') {
+    // Check localStorage for persistent authentication
+    if (localStorage.getItem('authenticated') === 'true') {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('dashboard').classList.add('active');
         loadMealData();

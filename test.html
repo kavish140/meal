@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Test Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px 5px;
+            text-align: center;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Meal Plan Website - Test Page</h1>
+
+    <div class="test-section">
+        <h2>✅ Setup Complete</h2>
+        <div class="test-item">
+            <strong>Status:</strong> <span class="success">All files created successfully!</span>
+        </div>
+        <div class="test-item">
+            <strong>Password:</strong> <code>K1681</code>
+        </div>
+        <div class="test-item">
+            <strong>Notification Time:</strong> <code>10:00 PM daily</code>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Test Your Website</h2>
+        <p><strong>Click the button below to open your website:</strong></p>
+        <a href="index.html" class="button" target="_blank">🚀 Open Meal Plan Website</a>
+
+        <h3 style="margin-top: 30px;">Test Checklist:</h3>
+        <div class="test-item">
+            <input type="checkbox" id="test1">
+            <label for="test1">Login page displays correctly</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2">
+            <label for="test2">Password "K1681" works</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3">
+            <label for="test3">Today's meals display correctly</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4">
+            <label for="test4">Weekly schedule shows all days</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5">
+            <label for="test5">"Enable Notifications" button works</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6">
+            <label for="test6">Design looks good on mobile (resize browser)</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📚 Documentation</h2>
+        <p>Review the documentation files:</p>
+        <a href="SETUP_COMPLETE.md" class="button">Setup Complete</a>
+        <a href="DEPLOYMENT.md" class="button">Deployment Guide</a>
+        <a href="README.md" class="button">Full README</a>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 Next: Deploy to GitHub Pages</h2>
+        <ol style="line-height: 2;">
+            <li>Create a new repository on <a href="https://github.com/new" target="_blank">GitHub</a></li>
+            <li>Run these commands:
+                <pre style="background: #f0f0f0; padding: 15px; border-radius: 5px; overflow-x: auto;">
+cd S:\Python\Projects\food_schedule
+git remote add origin https://github.com/YOUR_USERNAME/meal-plan.git
+git branch -M main
+git push -u origin main</pre>
+            </li>
+            <li>Enable GitHub Pages in repository Settings > Pages</li>
+            <li>Add your custom domain (optional)</li>
+            <li>Visit your live website! 🎉</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Quick Reference</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Password</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>K1681</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Notification Time</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">10:00 PM</td>
+            </tr>
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Main File</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">index.html</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Update Script</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">update_website.bat</td>
+            </tr>
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Data Source</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Weekly_Meal_Plan.xlsx</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="color: white; border-color: white;">🎊 You're All Set!</h2>
+        <p style="font-size: 18px;">
+            Your meal plan website is ready to go live. Test it locally, then deploy to GitHub Pages!
+        </p>
+        <p style="margin-top: 20px;">
+            <strong>Questions?</strong> Check the README.md for detailed documentation.
+        </p>
+    </div>
+
+    <script>
+        // Save checkbox states
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+            });
+
+            // Restore state
+            if (localStorage.getItem(checkbox.id) === 'true') {
+                checkbox.checked = true;
+            }
+        });
+    </script>
+</body>
+</html>
+

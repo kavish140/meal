@@ -1,0 +1,67 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║     🚀 QUICK START - CREATE GITHUB REPO VIA TERMINAL 🚀      ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+
+✅ EVERYTHING IS READY! Just follow these steps:
+
+
+STEP 1: Get Your GitHub Token
+═══════════════════════════════════════════════════════════════
+Go to: https://github.com/settings/tokens
+
+Click: "Generate new token (classic)"
+Name: Meal Plan Website
+Scope: ✅ repo (check the box)
+Generate and COPY the token
+
+
+STEP 2: Run the Script
+═══════════════════════════════════════════════════════════════
+Open PowerShell in this folder and run:
+
+    .\create_github_repo.ps1
+
+OR if that doesn't work, run:
+
+    create_github_repo.bat
+
+
+STEP 3: Enter Details When Asked
+═══════════════════════════════════════════════════════════════
+- GitHub username: [your username]
+- Personal Access Token: [paste the token]
+- Repository name: [press Enter for "meal-plan"]
+
+
+STEP 4: Enable GitHub Pages
+═══════════════════════════════════════════════════════════════
+After script succeeds:
+1. Go to: https://github.com/[USERNAME]/meal-plan/settings/pages
+2. Source: Select "main" branch
+3. Click "Save"
+4. Wait 2 minutes
+
+Your site: https://[USERNAME].github.io/meal-plan/
+
+
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+If you get "cannot be loaded because running scripts is disabled":
+
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Then try again.
+
+
+THAT'S IT!
+═══════════════════════════════════════════════════════════════
+Your meal plan website will be live on GitHub Pages!
+
+Password for website: K1681
+Notifications: 10 PM daily
+
+Need more help? Check: GITHUB_SETUP_GUIDE.md
+
